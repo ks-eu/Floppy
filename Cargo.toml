@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "crates/flpc",
+    "client",
+    "server"
+]
+resolver = "3"
