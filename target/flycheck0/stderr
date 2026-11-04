@@ -1,2 +1,2 @@
     Checking flpc v0.1.0 (/home/kishor/Projects/Floppy/crates/flpc)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+error: could not compile `flpc` (lib test) due to 4 previous errors

@@ -34,6 +34,14 @@ pub struct UserJoin {
     username: String,
 }
 
+pub trait Encode {
+    fn encode(&self) -> Result<Vec<u8>, ProtocolError>;
+}
+
+pub trait Decode: Sized {
+    fn decode(bytes: &[u8]) -> Result<Self, ProtocolError>;
+}
+
 impl Join {
     pub fn new(username: &str) -> Result<Self, ProtocolError> {
         if username.chars().count() > 16 {
@@ -45,8 +53,10 @@ impl Join {
             username: username.to_string(),
         })
     }
-    
-    pub fn encode(&self) -> Result<Vec<u8>, ProtocolError> {
+}
+
+impl Encode for Join {
+    fn encode(&self) -> Result<Vec<u8>, ProtocolError> {
         if self.username.len() != self.length as usize {
             return Err(ProtocolError::LengthMismatch);
         }
@@ -63,9 +73,9 @@ impl Join {
     }
 }
 
-impl JoinSuccess {
-    pub fn encode(&self) -> Vec<u8> {
-        vec![0x02]
+impl Encode for JoinSuccess {
+    fn encode(&self) -> Result<Vec<u8>, ProtocolError> {
+        Ok(vec![0x02])
     }
 }
 
@@ -75,9 +85,11 @@ impl JoinFail {
             id: code,
         }
     }
+}
 
-    pub fn encode(&self) -> Vec<u8> {
-        vec![0x03, self.id]
+impl Encode for JoinFail {
+    fn encode(&self) -> Result<Vec<u8>, ProtocolError>  {
+        Ok(vec![0x03, self.id])
     }
 }
 
@@ -92,8 +104,10 @@ impl Message {
             msg: msg.to_string(),
         })
     }
+}
 
-    pub fn encode(&self) -> Result<Vec<u8>, ProtocolError> {
+impl Encode for Message {
+    fn encode(&self) -> Result<Vec<u8>, ProtocolError> {
         if self.msg.len() != self.length as usize {
             return Err(ProtocolError::LengthMismatch);
         }
@@ -130,8 +144,10 @@ impl ClientMessage {
             msg: message.msg,
         }
     }
+}
 
-    pub fn encode(&self) -> Result<Vec<u8>, ProtocolError> {
+impl Encode for ClientMessage {
+    fn encode(&self) -> Result<Vec<u8>, ProtocolError> {
         if self.msg.len() != self.length as usize {
             return Err(ProtocolError::LengthMismatch);
         }
