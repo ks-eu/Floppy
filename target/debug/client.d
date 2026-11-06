@@ -1,1 +1,0 @@
-/home/kishor/Projects/Floppy/target/debug/client: /home/kishor/Projects/Floppy/client/src/chatwindow.rs /home/kishor/Projects/Floppy/client/src/input.rs /home/kishor/Projects/Floppy/client/src/lib.rs /home/kishor/Projects/Floppy/client/src/main.rs
