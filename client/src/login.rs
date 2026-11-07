@@ -30,6 +30,7 @@ impl LoginWindow {
             server: server.to_string(),
             limit: limit,
             status: LoginStatus::NotSent,
+
         }
     }
 

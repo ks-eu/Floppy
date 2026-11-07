@@ -103,31 +103,6 @@ impl ChatWindow {
         self.quit = true;
     }
 
-    // InputEvent Handling
-
-    pub fn inputevent(&mut self, event: InputEvent) -> bool {
-        match event {
-            InputEvent::KeyStroke(c) => {
-                self.add_input(c);
-            }
-            InputEvent::BackSpace => {
-                self.remove_input();
-            }
-            InputEvent::Enter => {
-                let output = self.send_input();
-                let msg = format!("{}> {}", self.username(), output);
-                self.add_message(msg);
-            }
-            InputEvent::Exit => {
-                self.quit();
-                return false;
-            }
-            InputEvent::Error => return false,
-            _ => {}
-        }
-        true
-    }
-
     // Rendering
 
 	pub fn render(&self, frame: &mut Frame) {
@@ -246,7 +221,5 @@ impl ChatWindow {
 			);
 
 		frame.render_widget(users, horizontal[1]);
-	}
-
-    
+	} 
 }
