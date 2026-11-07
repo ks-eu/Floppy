@@ -10,6 +10,8 @@ use ratatui::{
 
 use unicode_width::UnicodeWidthChar;
 
+use crate::input::InputEvent;
+
 #[derive(Debug)]
 pub struct ChatWindow {
     input: Vec<char>,
@@ -34,24 +36,32 @@ impl ChatWindow {
         }
     }
 
+    // Input
+
     pub fn input(&self) -> &[char] {
         &self.input
     }
+ 
     pub fn add_input(&mut self, c: char) {
         if self.input.len() < self.i_limit {
             self.input.push(c);
         }
     }
+
     pub fn remove_input(&mut self) {
         self.input.pop();
     }
+
     pub fn send_input(&mut self) -> String {
         self.input.drain(..).collect::<String>()
     }
 
+    // Messages
+
     pub fn messages(&self) -> &VecDeque<String> {
         &self.messages
     }
+
     pub fn add_message(&mut self, message: String) {
         if self.messages.len() >= self.m_limit {
             self.messages.pop_front();
@@ -59,30 +69,67 @@ impl ChatWindow {
         self.messages.push_back(message);
     }
 
+    // Users
+
     pub fn users(&self) -> &HashSet<String> {
         &self.users
     }
+
     pub fn add_user(&mut self, username: &str) {
         self.users.insert(username.to_string()); 
     }
+
     pub fn remove_user(&mut self, username: &str) {
         self.users.remove(username);
     }
 
+    // Username
+
     pub fn username(&self)  -> &str {
         &self.username
     }
+
     pub fn change_username(&mut self, username: &str) {
         self.username = String::from(username)
     }
 
+    // Quit
+
     pub fn state(&self) -> bool {
         self.quit
     }
+
     pub fn quit(&mut self) {
         self.quit = true;
     }
-	
+
+    // InputEvent Handling
+
+    pub fn inputevent(&mut self, event: InputEvent) -> bool {
+        match event {
+            InputEvent::KeyStroke(c) => {
+                self.add_input(c);
+            }
+            InputEvent::BackSpace => {
+                self.remove_input();
+            }
+            InputEvent::Enter => {
+                let output = self.send_input();
+                let msg = format!("{}> {}", self.username(), output);
+                self.add_message(msg);
+            }
+            InputEvent::Exit => {
+                self.quit();
+                return false;
+            }
+            InputEvent::Error => return false,
+            _ => {}
+        }
+        true
+    }
+
+    // Rendering
+
 	pub fn render(&self, frame: &mut Frame) {
 		let area = frame.area();
 
@@ -200,4 +247,6 @@ impl ChatWindow {
 
 		frame.render_widget(users, horizontal[1]);
 	}
+
+    
 }
