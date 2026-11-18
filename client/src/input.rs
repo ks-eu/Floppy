@@ -37,7 +37,9 @@ fn keypress(event: Event) -> Option<InputEvent> {
     }
 }
 
-pub fn keypress_sender(send: mpsc::Sender<InputEvent>) -> tokio::task::JoinHandle<()> {
+pub fn keypress_sender(
+    send: mpsc::Sender<InputEvent>,
+) -> tokio::task::JoinHandle<()> {
     tokio::spawn(async move {
         let mut events = EventStream::new();
         while let Some(event) = events.next().await {

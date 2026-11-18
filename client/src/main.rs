@@ -22,9 +22,13 @@ use flpc::header::*;
 use flpc::tokio::{FLPCodec, FLPCMsg};
 use flpc::error::ProtocolError;
 
-use client::login::{LoginWindow, LoginStatus};
-use client::chatwindow::ChatWindow;
-use client::input::{
+mod chatwindow;
+mod input;
+mod login;
+
+use login::{LoginWindow, LoginStatus};
+use chatwindow::ChatWindow;
+use input::{
     InputEvent,
     keypress_sender,
 };
@@ -63,7 +67,9 @@ async fn main() -> io::Result<()> {
 
 			Some(InputEvent::Enter) => {
                 let username = loginwindow.send_input();
-                let stream = match TcpStream::connect(loginwindow.server()).await {
+                let stream = match
+                    TcpStream::connect(loginwindow.server()).await
+                {
                     Ok(stream) => stream,
                     Err(_) => {
                         loginwindow.set_fail();
@@ -185,14 +191,22 @@ async fn main() -> io::Result<()> {
                         FLPCMsg::ClientMessage(msg) => {
                             let uuid = msg.uuid();
                             let msg = String::from(msg.msg());
-                            if read_send.send(InputEvent::Message(uuid, msg)).await.is_err() {
+                            if read_send
+                                .send(InputEvent::Message(uuid, msg))
+                                .await
+                                .is_err()
+                            {
                                 break;
                             }
                         }
                         FLPCMsg::UserJoin(msg) => {
                             let uuid = msg.uuid();
                             let username = String::from(msg.username());
-                            if read_send.send(InputEvent::UserJoin(uuid, username)).await.is_err() {
+                            if read_send
+                                .send(InputEvent::UserJoin(uuid, username))
+                                .await
+                                .is_err()
+                            {
                                 break;
                             }
                         }
