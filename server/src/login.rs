@@ -2,14 +2,22 @@ use std::sync::Arc;
 
 use tokio::net::TcpStream;
 use tokio::sync::{mpsc, RwLock};
+use tokio_util::codec::Framed;
+use futures_util::StreamExt;
 
-use crate::state::Users;
+use flpc::header::*;
+use flpc::tokio::{FLPCodec, FLPCMsg};
+use flpc::error::ProtocolError;use crate::state::Users;
 
 
-pub async fn login_handler(
+type ClientStream = Framed<TcpStream, FLPCodec>;
+
+pub async fn handle_login(
     users: Arc<RwLock<Users>>,
-    listener: TcpStream,
-    sender: mpsc::Sender<TcpStream>
+    stream: TcpStream,
+    sender: mpsc::Sender<ClientStream>
 ) -> Result<(), std::io::Error> {
+    let mut flpc_stream = Framed::new(stream, FLPCodec::new());
+        
     Ok(())
 }
