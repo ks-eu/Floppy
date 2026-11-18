@@ -412,7 +412,7 @@ checksum = "0ce7134b9999ecaf8bcd65542e436736ef32ddca1b3e06094cb6ec5755203b80"
 [[package]]
 name = "flpc"
 version = "0.1.0"
-source = "git+https://github.com/ks-eu/flpc#d2be2955f2c64bb3c289317e95f2cc874aefa173"
+source = "git+https://github.com/ks-eu/flpc#4c2a46c5e2c676e47e45d661f2029df9783d759a"
 dependencies = [
  "bytes",
  "tokio",

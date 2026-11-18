@@ -158,7 +158,7 @@ async fn main() -> io::Result<()> {
     // Chat Window - Main Program
     let mut chatwindow = ChatWindow::new(String::from("You"), 256, 200);
     let mut users: HashMap<u16, String> = HashMap::new();
-    let (send, mut recv) = mpsc::channel::<InputEvent>(100);
+    let (send, mut recv) = mpsc::channel::<InputEvent>(512);
     let input_send = send.clone();
     let _ = keypress_sender(input_send);
     let framed = match connection.take() {
