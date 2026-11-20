@@ -3,16 +3,16 @@ use std::fmt;
 
 #[derive(Debug)]
 pub enum UsersError {
-    InvalidMaxCount { max_count: usize },
+    InvalidMaxCount {max_count: usize},
     AtCapacity,
     DuplicateUsername,
-    UserNotFound { id: u16 },
+    UserNotFound {id: u16},
 }
 
 impl fmt::Display for UsersError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::InvalidMaxCount { max_count } => write!(
+            Self::InvalidMaxCount {max_count} => write!(
                 formatter,
                 "user capacity {max_count} exceeds {}",
                 u16::MAX
@@ -21,7 +21,7 @@ impl fmt::Display for UsersError {
             Self::DuplicateUsername => {
                 write!(formatter, "username already exists")
             }
-            Self::UserNotFound { id } => {
+            Self::UserNotFound {id} => {
                 write!(formatter, "user {id} not found")
             }
         }
@@ -29,5 +29,3 @@ impl fmt::Display for UsersError {
 }
 
 impl Error for UsersError {}
-
-
