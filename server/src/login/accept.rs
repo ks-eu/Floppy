@@ -4,7 +4,7 @@ use std::io::{self};
 use tokio_util::codec::Framed;
 use tokio::net::TcpStream;
 use tokio::sync::RwLock;
-use futures_util::{StreamExt, SinkExt};
+use futures_util::{Sink, SinkExt, StreamExt};
 
 use flpc::tokio::{FLPCodec, FLPCMsg};
 use flpc::error::ProtocolError;
@@ -95,11 +95,14 @@ fn check_length(
 }
 
 
-pub async fn send_joinfail(
-    stream: &mut Framed<TcpStream, FLPCodec>,
+pub async fn send_joinfail<S>(
+    sink: &mut S,
     failcode: u8,
-) -> io::Result<()> {
-    stream
+) -> io::Result<()>
+where
+    S: Sink<FLPCMsg, Error = ProtocolError> + Unpin,
+{
+    sink
         .send(FLPCMsg::JoinFail(JoinFail::new(failcode)))
         .await
         .map_err(|error| match error {

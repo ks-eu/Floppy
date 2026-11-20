@@ -73,7 +73,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     JoinOutcome::TcpFail => return,
                 };
 
-                let reader_tx = client_tx.clone();
+                let (mut sink, mut stream) = stream.split();
 
                 let (tx, rx) = oneshot
                     ::channel
@@ -94,12 +94,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let writer_tx = match rx.await {
                     Ok(Ok(tx)) => tx,
                     Ok(Err(_)) | Err(_) => {
-                        let _ = send_joinfail(&mut stream, 0).await;
+                        let _ = send_joinfail(&mut sink, 0).await;
                         return;
                     }
                 };
-                
-                
+                 
                 let users_setsender = users_conn.clone();
                 if let Err(_) = try_set_sender(
                     users_setsender,
@@ -109,7 +108,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     return
                 }
 
-                let reader_handle = tokio::spawn(async move {});
+                let reader_tx = client_tx.clone();
+                let reader_handle = tokio::spawn(async move {
+                    while let Some(msg) = stream.next().await {}
+                });
             });
         }
     });
