@@ -78,7 +78,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let (tx, rx) = oneshot
                     ::channel
                     ::<WriterResult>();
-                let writer_handle = tokio::spawn(async move {
+                tokio::spawn(async move {
                     let (writer_tx, mut writer_rx) = mpsc
                         ::channel
                         ::<ServerEvent>(CLIENTCAPACITY);
@@ -109,12 +109,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
 
                 let reader_tx = client_tx.clone();
-                let reader_handle = tokio::spawn(async move {
+                tokio::spawn(async move {
                     while let Some(msg) = stream.next().await {}
                 });
             });
         }
     });
 
-Ok(())
+    Ok(())
 }

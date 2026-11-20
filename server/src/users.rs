@@ -58,7 +58,7 @@ impl UserState {
     }
 
     pub fn insert(&mut self, username: &str) -> Result<u16, UsersError> {
-        if self.first_free_id == self.max_count {
+        if self.count == self.max_count {
             return Err(UsersError::AtCapacity);
         }
         if self.usernames.values().any(|user| user.username == username) {
